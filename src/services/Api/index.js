@@ -1,3 +1,5 @@
-export const Api = () => {
-  console.log("api");
-};
+import axios from "axios";
+
+export const Api = axios.create({
+  baseURL: "https://kenziehub.herokuapp.com",
+});

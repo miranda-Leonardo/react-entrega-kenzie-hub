@@ -9,13 +9,27 @@ import { Label } from "../../components/Label";
 import { Alert, Information } from "../../components/Paragraph";
 import { Select } from "../../components/Select";
 import { H2, Title } from "../../components/Title";
+import { useNavigate } from "react-router-dom";
+import { Api } from "../../services/Api";
 
 export const Register = () => {
+  const navigate = useNavigate();
   const formSchema = yup.object().shape({
     name: yup.string().required("Insira seu nome"),
-    email: yup.string().required("Insira um email válido"),
-    password: yup.string().required("Insira uma senha"),
-    confirmPassword: yup.string().required("Deve ser igual a senha"),
+    email: yup
+      .string()
+      .email("Deve ser um email válido")
+      .required("Email obrigatório"),
+    password: yup
+      .string()
+      .matches(/[a-z]/, "Deve conter ao menos 1 letra minuscula")
+      .matches(/(\d)/, "Deve conter ao menos um número")
+      .matches(/(\W)|_/, "Deve conter um caracter especial")
+      .matches(/.{8,}/, "Deve conter no mínimo 8 digitos")
+      .required("Insira uma senha"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password")], "Deve ser igual a senha"),
     biograph: yup.string().required("Digite algo sobre você"),
     contact: yup.string().required("Insira uma opção de contato"),
     module: yup.string().required("Selecione um módulo"),
@@ -27,18 +41,43 @@ export const Register = () => {
   } = useForm({
     resolver: yupResolver(formSchema),
   });
+  const submit = (data) => {
+    Api.post("/users", {
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      bio: data.biograph,
+      contact: data.contact,
+      course_module: data.module,
+    })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    navigate("/login");
+  };
   return (
     <>
       <Container>
         <ContainerForm>
           <div>
             <Title className="div__title">Kenzie Hub</Title>
-            <ButtonSmall>Voltar</ButtonSmall>
+            <ButtonSmall
+              onClick={(event) => {
+                event.preventDefault();
+                navigate("/login");
+              }}
+            >
+              Voltar
+            </ButtonSmall>
           </div>
           <section>
             <H2>Crie sua conta</H2>
             <Information>Rapido e grátis, vamos nessa</Information>
-            <Form onSubmit={handleSubmit(() => console.log(`chamar a função`))}>
+            <Form onSubmit={handleSubmit(submit)}>
               <Label htmlFor="name">Nome</Label>
               <Input
                 id="name"
@@ -89,12 +128,18 @@ export const Register = () => {
               <Alert>{err.contact?.message}</Alert>
               <Label htmlFor="module">Selecionar Módulo</Label>
               <Select name="modulos" id="module" {...register("module")}>
-                <option value="Primeiro Módulo">Primeiro Módulo</option>
-                <option value="Segundo Módulo">Segundo Módulo</option>
-                <option value="Terceiro Módulo">Terceiro Módulo</option>
-                <option value="Quarto Módulo">Quarto Módulo</option>
-                <option value="Quinto Módulo">Quinto Módulo</option>
-                <option value="Sexto Módulo">Sexto Módulo</option>
+                <option value="Primeiro módulo (Introdução ao Frontend)">
+                  Primeiro Módulo
+                </option>
+                <option value="Segundo módulo (Frontend Avançado)">
+                  Segundo Módulo
+                </option>
+                <option value="Terceiro módulo (Introdução ao Backend)">
+                  Terceiro Módulo
+                </option>
+                <option value="Quarto módulo (Backend Avançado)">
+                  Quarto Módulo
+                </option>
               </Select>
               <Alert>{err.module?.message}</Alert>
               <ButtonNegative type="submit">Cadastrar</ButtonNegative>

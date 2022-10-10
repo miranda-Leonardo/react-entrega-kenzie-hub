@@ -8,8 +8,11 @@ import { Label } from "../../components/Label";
 import { Input } from "../../components/Input";
 import { ButtonDefault, ButtonDisable } from "../../components/Buttons";
 import { Alert, Information } from "../../components/Paragraph";
+import { useNavigate } from "react-router-dom";
+import { Api } from "../../services/Api";
 
-export const Login = () => {
+export const Login = ({ setUser }) => {
+  const navigate = useNavigate();
   const formSchema = yup.object().shape({
     email: yup.string().required("Insira um email válido"),
     password: yup.string().required("A senha deve ser igual a cadastrada!"),
@@ -21,6 +24,23 @@ export const Login = () => {
   } = useForm({
     resolver: yupResolver(formSchema),
   });
+  async function submit(data) {
+    await Api.post("/sessions", {
+      email: data.email,
+      password: data.password,
+    })
+      .then((res) => {
+        console.log(res.data.user);
+        setUser(res.data.user);
+        window.localStorage.clear();
+        window.localStorage.setItem("@KenzieHub:token", res.data.token);
+        window.localStorage.setItem("@KenzieHub:id", res.data.user.id);
+        navigate("/dashboard");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   return (
     <>
       <Container>
@@ -28,7 +48,7 @@ export const Login = () => {
           <Title>Kenzie Hub</Title>
           <section>
             <H2>Login</H2>
-            <Form onSubmit={handleSubmit(() => console.log(`chamar a função`))}>
+            <Form onSubmit={handleSubmit(submit)}>
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -48,9 +68,10 @@ export const Login = () => {
               <ButtonDefault type="submit">Entrar</ButtonDefault>
               <Information>Ainda não possui uma conta?</Information>
               <ButtonDisable
-                onClick={() =>
-                  console.log("Adicionar a função de redirecionamento")
-                }
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigate("/register");
+                }}
               >
                 Cadastrar-se
               </ButtonDisable>

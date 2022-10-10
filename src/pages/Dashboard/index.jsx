@@ -1,25 +1,38 @@
+import { toast } from "react-toastify";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ButtonSmall } from "../../components/Buttons";
 import { Container } from "../../components/Container";
 import { Information, Paragraph } from "../../components/Paragraph";
 import { H2, Title } from "../../components/Title";
 
-export const Dashboard = () => {
-  const { user, setUser } = useState("");
-  const { module, setModule } = useState("");
-  const { list, setList } = useState([null]);
+export const Dashboard = ({ user }) => {
+  const navigate = useNavigate();
+  const { list, setList } = useState(null);
+  const logout = () => {
+    window.localStorage.clear();
+    toast("Esperamos que volte logo! Tenha um bom dia.")
+    navigate("/login");
+  };
   return (
     <>
       <Container>
         <header>
           <Title className="header__title">Kenzie Hub</Title>
-          <ButtonSmall>Voltar</ButtonSmall>
+          <ButtonSmall
+            onClick={(event) => {
+              event.preventDefault();
+              logout();
+            }}
+          >
+            Sair
+          </ButtonSmall>
         </header>
         <hr />
         <main>
           <section className="main__header">
-            <H2>{`Olá, ${user}`}</H2>
-            <Information>{module} Nome do módulo</Information>
+            <H2>{`Olá, ${user.name}`}</H2>
+            <Information>{`${user.course_module}`}</Information>
           </section>
           <hr />
           <section className="main__content">
