@@ -10,6 +10,7 @@ import { ButtonDefault, ButtonDisable } from "../../components/Buttons";
 import { Alert, Information } from "../../components/Paragraph";
 import { useNavigate } from "react-router-dom";
 import { Api } from "../../services/Api";
+import { toast } from "react-toastify";
 
 export const Login = ({ setUser }) => {
   const navigate = useNavigate();
@@ -35,10 +36,12 @@ export const Login = ({ setUser }) => {
         window.localStorage.clear();
         window.localStorage.setItem("@KenzieHub:token", res.data.token);
         window.localStorage.setItem("@KenzieHub:id", res.data.user.id);
+        toast.success("Login realizado com sucesso!");
         navigate("/dashboard");
       })
       .catch((err) => {
         console.log(err);
+        toast.error("Ops, algo deu errado!");
       });
   }
   return (

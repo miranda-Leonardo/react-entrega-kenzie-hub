@@ -11,6 +11,7 @@ import { Select } from "../../components/Select";
 import { H2, Title } from "../../components/Title";
 import { useNavigate } from "react-router-dom";
 import { Api } from "../../services/Api";
+import { toast } from "react-toastify";
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -52,9 +53,11 @@ export const Register = () => {
     })
       .then((res) => {
         console.log(res.data);
+        toast.success('Cadastro realizado com sucesso!')
       })
       .catch((err) => {
         console.log(err);
+        toast.error("Ops, algo deu errado!");
       });
 
     navigate("/login");
