@@ -11,7 +11,7 @@ export const Dashboard = ({ user }) => {
   const { list, setList } = useState(null);
   const logout = () => {
     window.localStorage.clear();
-    toast("Esperamos que volte logo! Tenha um bom dia.")
+    toast("Esperamos que volte logo! Tenha um bom dia.");
     navigate("/login");
   };
   return (
