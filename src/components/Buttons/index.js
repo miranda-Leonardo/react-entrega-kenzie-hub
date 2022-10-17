@@ -37,6 +37,7 @@ export const ButtonSmall = styled(ButtonDefault)`
   padding: 10px;
   font-size: 12px;
   font-weight: 600;
+  color: var(--color-white-0);
   background-color: var(--color-grey-3);
   border: 2px solid var(--color-grey-3);
 

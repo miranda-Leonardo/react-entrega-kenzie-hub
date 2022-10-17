@@ -56,6 +56,24 @@ export const Container = styled.div`
     }
   }
 
+  .main__content__header {
+    width: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    p {
+      width: 50%;
+      display: inline-block;
+      text-align: start;
+      color: var(--color-white-0);
+    }
+
+    button {
+      text-align: end;
+    }
+  }
+
   .aviso {
     text-align: left;
   }
@@ -88,5 +106,37 @@ export const ContainerForm = styled.div`
 
   .div__title {
     width: auto;
+  }
+`;
+
+export const ContainerModal = styled.div`
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  position: fixed;
+  display: flex;
+  background-color: var(--color-black-1);
+`;
+
+export const Modal = styled.div`
+  min-width: 300px;
+  max-width: 400px;
+  padding: 20px;
+  margin: auto;
+
+  form > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      color: var(--color-white-0);
+      min-width: 50%;
+    }
+
+    button {
+      width: auto;
+    }
   }
 `;
