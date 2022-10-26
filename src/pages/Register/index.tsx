@@ -9,12 +9,21 @@ import { Label } from "../../components/Label";
 import { Alert, Information } from "../../components/Paragraph";
 import { Select } from "../../components/Select";
 import { H2, Title } from "../../components/Title";
-import { useNavigate } from "react-router-dom";
-import { Api } from "../../services/Api";
-import { toast } from "react-toastify";
+import { useContext } from "react";
+import { UserContext } from "../../contexts";
+
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  biograph: string;
+  contact: string;
+  module: string;
+};
 
 export const Register = () => {
-  const navigate = useNavigate();
+  const { submitRegister, navigate } = useContext(UserContext);
   const formSchema = yup.object().shape({
     name: yup.string().required("Insira seu nome"),
     email: yup
@@ -39,29 +48,9 @@ export const Register = () => {
     register,
     handleSubmit,
     formState: { errors: err },
-  } = useForm({
+  } = useForm<FormValues>({
     resolver: yupResolver(formSchema),
   });
-  const submit = (data) => {
-    Api.post("/users", {
-      email: data.email,
-      password: data.password,
-      name: data.name,
-      bio: data.biograph,
-      contact: data.contact,
-      course_module: data.module,
-    })
-      .then((res) => {
-        console.log(res.data);
-        toast.success('Cadastro realizado com sucesso!')
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Ops, algo deu errado!");
-      });
-
-    navigate("/login");
-  };
   return (
     <>
       <Container>
@@ -80,7 +69,7 @@ export const Register = () => {
           <section>
             <H2>Crie sua conta</H2>
             <Information>Rapido e grátis, vamos nessa</Information>
-            <Form onSubmit={handleSubmit(submit)}>
+            <Form onSubmit={handleSubmit(submitRegister)}>
               <Label htmlFor="name">Nome</Label>
               <Input
                 id="name"
@@ -130,7 +119,7 @@ export const Register = () => {
               />
               <Alert>{err.contact?.message}</Alert>
               <Label htmlFor="module">Selecionar Módulo</Label>
-              <Select name="modulos" id="module" {...register("module")}>
+              <Select id="module" {...register("module")}>
                 <option value="Primeiro módulo (Introdução ao Frontend)">
                   Primeiro Módulo
                 </option>
