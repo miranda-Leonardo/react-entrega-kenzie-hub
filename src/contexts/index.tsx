@@ -1,17 +1,60 @@
-import { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useEffect, useState } from "react";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { Api } from "../services/Api";
 import { toast } from "react-toastify";
 
-export const UserContext = createContext({});
+interface IProvidersProps {
+  children: React.ReactNode;
+}
 
-export const Providers = ({ children }) => {
-  const [user, setUser] = useState("");
-  const [list, setList] = useState(null);
+interface ISubmitLoginData {
+  email: string;
+  password: string;
+}
+
+interface ISubmitRegisterData {
+  email: string;
+  password: string;
+  name: string;
+  biograph: string;
+  contact: string;
+  module: string;
+}
+
+interface INewTechData {
+  name: string;
+  status: string;
+}
+
+interface IUpdateTechData {
+  name?: string;
+  status: string;
+}
+
+interface IUserContext {
+  user: any | string;
+  setUser: React.Dispatch<any | string>;
+  navigate: NavigateFunction;
+  submitLogin(data: ISubmitLoginData): Promise<void>;
+  submitRegister(data: ISubmitRegisterData): Promise<void>;
+  list: any | null;
+  setList: React.Dispatch<any | null>;
+  logout(): void;
+  submitNewTech(data: INewTechData): Promise<void>;
+  removeTech(title: string): void;
+  userId: string | null;
+}
+
+export const UserContext = createContext<IUserContext>({} as IUserContext);
+
+export const Providers = ({ children }: IProvidersProps) => {
+  const [user, setUser] = useState<any | string>("");
+  const [list, setList] = useState<any | null>(null);
   const [userToken, setUserToken] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
-  async function submitLogin(data) {
+
+  async function submitLogin(data: ISubmitLoginData) {
     await Api.post("/sessions", {
       email: data.email,
       password: data.password,
@@ -32,8 +75,8 @@ export const Providers = ({ children }) => {
         toast.error("Ops, algo deu errado!");
       });
   }
-  const submitRegister = (data) => {
-    Api.post("/users", {
+  const submitRegister = async (data: ISubmitRegisterData) => {
+    await Api.post("/users", {
       email: data.email,
       password: data.password,
       name: data.name,
@@ -63,8 +106,8 @@ export const Providers = ({ children }) => {
     setUserToken(null);
     setUserId(null);
   };
-  const submitNewTech = (data) => {
-    Api.post(
+  const submitNewTech = async (data: INewTechData) => {
+    await Api.post(
       "/users/techs",
       {
         title: data.name,
@@ -82,8 +125,9 @@ export const Providers = ({ children }) => {
         update(data);
       });
   };
-  const update = (data) => {
-    Api.post(
+
+  const update = async (data: IUpdateTechData) => {
+    await Api.post(
       "/users/techs/:tech_id",
       {
         status: data.status,
@@ -99,8 +143,8 @@ export const Providers = ({ children }) => {
         toast.error("Ops, algo deu errado!");
       });
   };
-  const removeTech = (title) => {
-    const newList = list.filter((item) => item.title !== title);
+  const removeTech = (title: string) => {
+    const newList = list.filter((item: any) => item.title !== title);
     toast.success("Tecnologia removida com sucesso!");
     setList(newList);
   };

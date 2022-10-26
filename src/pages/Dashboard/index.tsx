@@ -13,6 +13,11 @@ import { Select } from "../../components/Select";
 import { UserContext } from "../../contexts";
 import { useContext, useState } from "react";
 
+type FormValues = {
+  name: string;
+  status: string;
+};
+
 export const Dashboard = () => {
   const [renderModal, setRenderModal] = useState(false);
   const { user, navigate, list, logout, submitNewTech, removeTech, userId } =
@@ -25,7 +30,7 @@ export const Dashboard = () => {
     register,
     handleSubmit,
     formState: { errors: err },
-  } = useForm({
+  } = useForm<FormValues>({
     resolver: yupResolver(formSchema),
   });
   const newTech = () => {
@@ -53,12 +58,12 @@ export const Dashboard = () => {
             />
             <Alert>{err.name?.message}</Alert>
             <Label htmlFor="status">Selecionar Módulo</Label>
-            <Select name="status" id="status" {...register("status")}>
+            <Select id="status" {...register("status")}>
               <option value="Iniciante">Iniciante</option>
               <option value="Intermediário">Intermediário</option>
               <option value="Avançado">Avançado</option>
             </Select>
-            <Alert>{err.module?.message}</Alert>
+            <Alert>{err.status?.message}</Alert>
             <ButtonDefault type="submit">Cadastrar Tecnologia</ButtonDefault>
           </Form>
         </Modal>
@@ -106,7 +111,7 @@ export const Dashboard = () => {
                   </ButtonSmall>
                 </div>
                 <ContainerCard>
-                  {list.map((item) => {
+                  {list.map((item: any) => {
                     return (
                       <Card key={item.title}>
                         <div>
