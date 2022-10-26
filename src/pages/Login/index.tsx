@@ -11,6 +11,11 @@ import { Alert, Information } from "../../components/Paragraph";
 import { UserContext } from "../../contexts";
 import { useContext } from "react";
 
+type FormValues = {
+  email: string;
+  password: string;
+};
+
 export const Login = () => {
   const { submitLogin, navigate } = useContext(UserContext);
   const formSchema = yup.object().shape({
@@ -21,7 +26,7 @@ export const Login = () => {
     register,
     handleSubmit,
     formState: { errors: err },
-  } = useForm({
+  } = useForm<FormValues>({
     resolver: yupResolver(formSchema),
   });
   return (

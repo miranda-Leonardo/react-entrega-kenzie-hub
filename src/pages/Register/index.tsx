@@ -12,6 +12,16 @@ import { H2, Title } from "../../components/Title";
 import { useContext } from "react";
 import { UserContext } from "../../contexts";
 
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  biograph: string;
+  contact: string;
+  module: string;
+};
+
 export const Register = () => {
   const { submitRegister, navigate } = useContext(UserContext);
   const formSchema = yup.object().shape({
@@ -38,9 +48,9 @@ export const Register = () => {
     register,
     handleSubmit,
     formState: { errors: err },
-  } = useForm({
+  } = useForm<FormValues>({
     resolver: yupResolver(formSchema),
-  });  
+  });
   return (
     <>
       <Container>
@@ -109,7 +119,7 @@ export const Register = () => {
               />
               <Alert>{err.contact?.message}</Alert>
               <Label htmlFor="module">Selecionar Módulo</Label>
-              <Select name="modulos" id="module" {...register("module")}>
+              <Select id="module" {...register("module")}>
                 <option value="Primeiro módulo (Introdução ao Frontend)">
                   Primeiro Módulo
                 </option>
